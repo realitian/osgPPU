@@ -104,6 +104,7 @@ osg::StateSet* createState(osgPPU::Processor* processor)
         return 0;
     }
 
+    osg::StateSet* stateset = new osg::StateSet;
     // read 4 2d images
     osg::ref_ptr<osg::Image> image[4];
     image[0] = osgDB::readImageFile("Data/Images/lz.rgb");
@@ -114,19 +115,16 @@ osg::StateSet* createState(osgPPU::Processor* processor)
     if (!image[0] || !image[1] || !image[2] || !image[3])
     {
         std::cout << "Warning: could not open files: Data/Images/..."<<std::endl;
-        return new osg::StateSet;
+        return stateset;
     }
 
     if (image[0]->getPixelFormat()!=image[1]->getPixelFormat() || image[0]->getPixelFormat()!=image[2]->getPixelFormat() || image[0]->getPixelFormat()!=image[3]->getPixelFormat())
     {
         std::cout << "Warning: image pixel formats not compatible."<<std::endl;
-        return new osg::StateSet;
+        return stateset;
     }
 
-    // get max 3D texture size
-    GLint textureSize = osg::Texture3D::getExtensions(0,true)->maxTexture3DSize();
-    if (textureSize > 256)
-        textureSize = 256;
+    GLint textureSize = 256;
 
     // scale them all to the same size.
     image[0]->scaleImage(textureSize,textureSize,1);
@@ -195,7 +193,6 @@ osg::StateSet* createState(osgPPU::Processor* processor)
     texgen->setPlane(osg::TexGen::R, osg::Plane(0.0f,0.0f,0.0f,0.2f));
 
     // create the StateSet to store the texture data
-    osg::StateSet* stateset = new osg::StateSet;
     stateset->setTextureMode(0,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
     stateset->setTextureAttribute(0,texgen);
     stateset->setTextureAttributeAndModes(0,texture3D,osg::StateAttribute::ON);

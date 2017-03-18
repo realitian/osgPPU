@@ -233,14 +233,14 @@ namespace osgPPU
         if (mUseShader) return;
 
         // get the fbo extensions
-        osg::FBOExtensions* fbo_ext = osg::FBOExtensions::instance(renderInfo.getContextID(),true);
+        osg::GLExtensions* ext = renderInfo.getState()->get<osg::GLExtensions>();
         
         // we don't use shader, that means that the mipmaps are generated in hardware, hence do this
         std::map<int, osg::ref_ptr<osg::Texture> >::iterator it = mOutputTex.begin();
         for (; it != mOutputTex.end(); it++)
         {
             renderInfo.getState()->applyTextureAttribute(0, it->second.get());
-            fbo_ext->glGenerateMipmap(it->second->getTextureTarget());
+            ext->glGenerateMipmap(it->second->getTextureTarget());
         }
     }
     

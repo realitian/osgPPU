@@ -26,6 +26,7 @@
 #include <osg/Geometry>
 #include <osg/BufferObject>
 #include <osg/FrameBufferObject>
+#include <osg/GLExtensions>
 
 #include <osgPPU/Export.h>
 #include <osgPPU/ColorAttribute.h>
@@ -307,7 +308,7 @@ class OSGPPU_EXPORT Unit : public osg::Group {
         **/
         inline void popFrameBufferObject(osg::State& state)
         {
-            osg::FBOExtensions* ext = osg::FBOExtensions::instance(state.getContextID(), true);
+            osg::GLExtensions* ext = state.get<osg::GLExtensions>();
             ext->glBindFramebuffer(GL_FRAMEBUFFER_EXT, mPushedFBO[state.getContextID()]);
         }
 
